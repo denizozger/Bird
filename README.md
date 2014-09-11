@@ -14,6 +14,7 @@ The future
 - [Handlebars] for templating (it is actually there & works but I need to convert EJS to Handlebars)
 - [Require.js] for front-end dependencies
 - [Grunt] for minification
+- Deploy to Heroku button
 
 ## Running locally
 ```
