@@ -1,0 +1,23 @@
+{
+  "name": "Bird",
+  "version": "0.1.0",
+  "author": "Deniz Ozger <denizozger@gmail.com> (http://www.denizozger.com/)",
+  "repository": "",
+  "scripts": {
+    "start": "node --harmony server.js"
+  },
+  "engines": {
+    "node": "^0.11.12"
+  },
+  "dependencies": {
+    "koa": "~0.11.0",
+    "co-views": "~0.2.0",
+    "ejs": "~1.0.0",
+    "koa-static": "~1.4.7",
+    "bluebird": "~2.3.2",
+    "koa-passport": "~1.0.1",
+    "koa-generic-session": "~1.2.1",
+    "passport-google": "~0.3.0",
+    "koa-router": "~3.3.1"
+  }
+}
