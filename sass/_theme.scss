@@ -1,0 +1,23 @@
+.header-container {
+    border-bottom: 20px solid $primary-colour-shade;
+}
+
+/*.footer-container,
+*/.main aside {
+    border-top: 20px solid $primary-colour-shade;
+}
+
+.header-container,
+/*.footer-container,*/
+.main aside {
+    background: $primary-colour;
+}
+
+.title {
+    color: white;
+}
+
+.body-container {
+    min-height: 100%;
+    background-color: white;
+}

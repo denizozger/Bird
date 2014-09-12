@@ -53,6 +53,6 @@ var LoginView = Backbone.View.extend({
 });
 
 var loginView = new LoginView();
-
+loginView.render();
 
 

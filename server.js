@@ -45,7 +45,8 @@ app.use(function *(next){
  */
 app.use(serve(__dirname));
 
-pub.get('/', index);
+// pub.get('/', index);
+pub.get('/login', login);
 pub.get('/auth/google', passport.authenticate('google'));
 pub.get('/auth/google/callback',
   passport.authenticate('google', {
@@ -53,6 +54,10 @@ pub.get('/auth/google/callback',
     failureRedirect: '/loginFailed'
   })
 )
+pub.get('/logout', function*(next) {
+  this.logout()
+  this.redirect('/')
+})
 
 app.use(pub.middleware())
 
@@ -61,11 +66,15 @@ app.use(function*(next) {
   if (this.isAuthenticated()) {
     yield next
   } else {
-    this.redirect('/')
+    this.redirect('/login')
   }
 })
 
-var secured = new Router()
+var secured = new Router();
+
+secured.get('/', function*(a) {
+  this.body = yield render('login');
+})
 
 secured.get('/admin', function*(a) {
   // console.log(JSON.stringify(this.req.user, null, 4));
@@ -78,6 +87,9 @@ function *index() {
   this.body = yield render('index', {user: null});
 }
 
+function *login() {
+  this.body = yield render('login', {user: null});
+}
 
 app.listen(3000);
 

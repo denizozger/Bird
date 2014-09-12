@@ -1,0 +1,24 @@
+video {
+  position: fixed; right: 0; bottom: 0;
+  min-width: 100%; min-height: 100%;
+  width: auto; height: auto; z-index: -100;
+  background: url(http://d2bptzq05weps4.cloudfront.net/assets/free_clips/3@2x-a63391a912e39a2296598c9b592cfead.jpg) no-repeat;
+  background-size: cover;
+}
+
+.login-field {
+    padding: 75px 150px;
+    background: rgba(255,255,255,0.7);
+    border: 1px solid white;
+    border-radius: 6px;
+}
+
+.footer {
+    clear: both;
+    position: relative;
+    z-index: 10;
+    height: 3em;
+    margin-top: -3em;
+    background: $primary-colour;
+    box-shadow: 0 -5px 10px #aaa;
+}

@@ -19,6 +19,8 @@ coverage
 
 # Compiled binary addons (http://nodejs.org/api/addons.html)
 build/Release
+*.map
+.sass-cache
 
 # Dependency directory
 bower_components

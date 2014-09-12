@@ -6,9 +6,10 @@ This is some sort of playground that I try frameworks/technologies
 Currently, it uses
 - [Koa] as web server
 - [EJS] for templating
-- [koa-passport] for authentication
+- [Passport] for authentication
 - [Bower] for front-end packages
 - [Backbone] except routing
+- [Sass] for tidy CSS
 
 The future
 - [Handlebars] for templating (it is actually there & works but I need to convert EJS to Handlebars)
@@ -24,9 +25,10 @@ node --harmony bacteria
 
 [Koa]:http://koajs.com/
 [EJS]:http://embeddedjs.com/
-[koa-passport]:https://www.npmjs.org/package/koa-passport
+[Passport]:http://passportjs.org/
 [Bower]:http://bower.io/
 [Backbone]:http://backbonejs.org/
 [Handlebars]:http://handlebarsjs.com/
 [Require.js]:http://requirejs.org/
 [Grunt]:http://gruntjs.com/
+[Sass]:http://sass-lang.com/
