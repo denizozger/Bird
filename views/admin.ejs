@@ -1,0 +1,21 @@
+<% include common/top %>
+
+    <article>
+        <header>
+            <%
+              if (user) {
+            %>
+              <p>Hello <%=user.profile.name.givenName%></p>
+            <%
+              }
+            %>
+        </header>
+
+    </article>
+
+    <aside>
+        <h3>Tips</h3>
+        <p>Some tips about some stuff</p>
+    </aside>
+
+<% include common/bottom %>

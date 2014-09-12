@@ -6,7 +6,9 @@ const koa = require('koa'),
       serve = require('koa-static'),
       app = koa(),
       session = require('koa-generic-session'),
-      passport = require('koa-passport');
+      passport = require('koa-passport'),
+      parse = require('co-busboy'),
+      fs = require('fs');
 
 var render = views(__dirname + '/views', { ext: 'ejs' });
 var pub = new Router()
@@ -41,11 +43,11 @@ app.use(function *(next){
 });
 
 /**
- * Routes
+ * Public routes
  */
 app.use(serve(__dirname));
 
-// pub.get('/', index);
+
 pub.get('/login', login);
 pub.get('/auth/google', passport.authenticate('google'));
 pub.get('/auth/google/callback',
@@ -59,7 +61,15 @@ pub.get('/logout', function*(next) {
   this.redirect('/')
 })
 
-app.use(pub.middleware())
+app.use(pub.middleware());
+
+function *login() {
+  this.body = yield render('login');
+}
+
+/**
+ * Secure routes
+ */
 
 // Require authentication
 app.use(function*(next) {
@@ -78,20 +88,62 @@ secured.get('/', function*(a) {
 
 secured.get('/admin', function*(a) {
   // console.log(JSON.stringify(this.req.user, null, 4));
-  this.body = yield render('index', { user: this.req.user });
+  this.body = yield render('admin', { user: this.req.user });
 })
+
+secured.get('/upload', function*(a) {
+  this.body = yield render('upload');
+})
+
+secured.post('/upload', function*(a) {
+  // multipart upload
+  var parts = parse(this);
+  var part;
+
+  while (part = yield parts) {
+    var stream = fs.createWriteStream('tmp/' + part.filename);
+    part.pipe(stream);
+    console.log('Uploading %s -> %s', part.filename, stream.path);
+  }
+
+  this.body = yield render('upload', { outcome: 'success'});
+})
+
+function *index() {
+  this.body = yield render('index');
+}
 
 app.use(secured.middleware())
 
-function *index() {
-  this.body = yield render('index', {user: null});
-}
-
-function *login() {
-  this.body = yield render('login', {user: null});
-}
-
 app.listen(3000);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
