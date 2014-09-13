@@ -21,7 +21,7 @@ The future
 ```
 npm install
 bower install
-node --harmony bacteria
+node --harmony server
 ```
 
 [Koa]:http://koajs.com/
