@@ -22,7 +22,7 @@ The future
 ```
 npm install
 bower install
-npm start
+node --harmony server
 ```
 
 [Koa]:http://koajs.com/
