@@ -8,7 +8,11 @@ const koa = require('koa'),
       session = require('koa-generic-session'),
       passport = require('koa-passport'),
       parse = require('co-busboy'),
-      fs = require('fs');
+      fs = require('fs'),
+      config = require('./config/config.js')(),
+      cdn = require('./lib/cdn.js')(config),
+      ftp = require('./lib/ftp.js')(config),
+      os = require('os');
 
 var render = views(__dirname + '/views', { ext: 'ejs' });
 var pub = new Router()
@@ -47,7 +51,6 @@ app.use(function *(next){
  */
 app.use(serve(__dirname));
 
-
 pub.get('/login', login);
 pub.get('/auth/google', passport.authenticate('google'));
 pub.get('/auth/google/callback',
@@ -71,14 +74,15 @@ function *login() {
  * Secure routes
  */
 
+// todo commented out in order not to login each time during development
 // Require authentication
-app.use(function*(next) {
-  if (this.isAuthenticated()) {
-    yield next
-  } else {
-    this.redirect('/login')
-  }
-})
+// app.use(function*(next) {
+//   if (this.isAuthenticated()) {
+//     yield next
+//   } else {
+//     this.redirect('/login')
+//   }
+// })
 
 var secured = new Router();
 
@@ -99,14 +103,34 @@ secured.post('/upload', function*(a) {
   // multipart upload
   var parts = parse(this);
   var part;
+  var filename;
+  var numberOfFilesToProcess = parts.length;
+  var numberOfProcessedFiles = 0;
+  var numberOfUploadedFiles = 0;
 
   while (part = yield parts) {
-    var stream = fs.createWriteStream('tmp/' + part.filename);
+    numberOfProcessedFiles++;
+
+    var stream = fs.createWriteStream(os.tmpdir() + part.filename);
     part.pipe(stream);
-    console.log('Uploading %s -> %s', part.filename, stream.path);
+    filename = part.filename;
+
+    console.log('Receiving %s -> %s', part.filename, stream.path);
+
+    var file = fs.createReadStream(stream.path);
+
+    ftp.upload(file, part.filename, function(){
+      numberOfUploadedFiles++;
+
+      // todo socket message: success
+
+      if (numberOfProcessedFiles === numberOfFilesToProcess) {
+        // todo socket message: all done
+      }
+    } );
   }
 
-  this.body = yield render('upload', { outcome: 'success'});
+  this.body = yield render('upload');
 })
 
 function *index() {

@@ -16,12 +16,13 @@ The future
 - [Require.js] for front-end dependencies
 - [Grunt] for minification
 - Deploy to Heroku button
+- Try out https://github.com/gmetais/grunt-devperf
 
 ## Running locally
 ```
 npm install
 bower install
-node --harmony bacteria
+npm start
 ```
 
 [Koa]:http://koajs.com/

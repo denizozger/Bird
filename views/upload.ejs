@@ -1,11 +1,10 @@
 <% include common/top %>
 
     <h1>File Upload</h1>
-    <p>Try uploading multiple files at a time.</p>
 
     <form action="/upload" method="post" enctype="multipart/form-data">
         <input type="file" name="file" multiple>
-        <input type="submit" value="Upload">
+        <button type="submit" class="primary">Upload</button>
     </form>
 
     <%
@@ -17,8 +16,8 @@
     %>
 
     <aside>
-        <h3>Tips</h3>
-        <p>Some tips about some stuff</p>
+        <h3>Tip</h3>
+        <p>Try uploading multiple files at a time.</p>
     </aside>
 
 <% include common/bottom %>
