@@ -15,7 +15,8 @@ const koa = require('koa'),
       os = require('os'),
       websocketServer = require('http').Server(app.callback()),
       io = require('socket.io')(websocketServer),
-      co = require('co');
+      co = require('co'),
+      logger = require('./lib/log');
 
 var render = views(__dirname + '/views', { ext: 'ejs' });
 var pub = new Router();
@@ -66,7 +67,12 @@ app.use(function *(next){
   var start = new Date;
   yield next;
   var ms = new Date - start;
-  console.log('%s %s %s - %s ms', this.method, this.response.status, this.url, ms);
+
+  if (this.response.status !== '200') {
+    console.log('%s %s %s - %s ms', this.method, this.response.status, this.url, ms);
+  } else {
+    console.log('%s %s %s - %s ms', this.method, this.response.status, this.url, ms);
+  }
 });
 
 app.on('error', function(err){
