@@ -24,6 +24,26 @@ var pub = new Router();
  * Middleware
  */
 
+// error propogator
+ app.use(function *(next){
+   try {
+     yield next;
+   } catch (err) {
+     this.status = err.status || 500;
+     this.type = 'html';
+     this.body = '<p>Something went wrong.</p>';
+
+     // delegate error to the regular app
+     this.app.emit('error', err, this);
+   }
+ });
+
+ // error handler
+ app.on('error', function(err){
+   console.log('Error %s', err.message);
+   console.log(err);
+ });
+
 // x-response-time
 app.use(function *(next){
   var start = new Date;
@@ -47,6 +67,10 @@ app.use(function *(next){
   yield next;
   var ms = new Date - start;
   console.log('%s %s %s - %s ms', this.method, this.response.status, this.url, ms);
+});
+
+app.on('error', function(err){
+  console.error('server error', err);
 });
 
 var websocketConnections = {}; // user identifier -> connection
@@ -114,11 +138,11 @@ secured.get('/upload', function*(a) {
   this.body = yield render('upload', { user: this.req.user });
 })
 
+// To this date, there is no co-ftp kind of library, so we have callbacks
 secured.post('/upload', function*(a) {
   // the rest of the updates will be done via websocket channel
   this.body = yield render('upload', { user: this.req.user });
 
-  // multipart upload
   var parts = parse(this);
   var part;
   var filename;
@@ -133,6 +157,8 @@ secured.post('/upload', function*(a) {
     var file = fs.createReadStream(stream.path);
     var userId = this.req.user.identifier;
 
+    // with a coftp, this would be "yield ftp.upload" just like here
+    // https://github.com/koajs/examples/blob/master/multipart/app.js
     ftp.upload(file, part.filename, function(filename) {
       websocketConnections[userId].emit('progress', 'Uploaded ' + filename);
     });
