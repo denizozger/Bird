@@ -37,7 +37,7 @@ app.keys = ['your-session-secret'];
 app.use(session());
 
 // authentication
-require('./js/auth');
+require('./lib/auth');
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -49,7 +49,7 @@ app.use(function *(next){
   console.log('%s %s %s - %s ms', this.method, this.response.status, this.url, ms);
 });
 
-var websocketConnections = {}; // identifier -> connection
+var websocketConnections = {}; // user identifier -> connection
 
 /**
  * WebSocket server
