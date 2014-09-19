@@ -12,10 +12,13 @@ const koa = require('koa'),
       config = require('./config/config.js')(),
       cdn = require('./lib/cdn.js')(config),
       ftp = require('./lib/ftp.js')(config),
-      os = require('os');
+      os = require('os'),
+      websocketServer = require('http').Server(app.callback()),
+      io = require('socket.io')(websocketServer),
+      co = require('co');
 
 var render = views(__dirname + '/views', { ext: 'ejs' });
-var pub = new Router()
+var pub = new Router();
 
 /**
  * Middleware
@@ -46,6 +49,20 @@ app.use(function *(next){
   console.log('%s %s %s - %s ms', this.method, this.response.status, this.url, ms);
 });
 
+var websocketConnections = {}; // identifier -> connection
+
+/**
+ * WebSocket server
+ */
+ io.on('connection', function(connection){
+  connection.on('upload_page', function (identifier) {
+    console.log('New websocket connection ' + identifier);
+    websocketConnections[identifier] = connection;
+  });
+});
+
+ websocketServer.listen(4000);
+
 /**
  * Public routes
  */
@@ -73,16 +90,14 @@ function *login() {
 /**
  * Secure routes
  */
-
-// todo commented out in order not to login each time during development
 // Require authentication
-// app.use(function*(next) {
-//   if (this.isAuthenticated()) {
-//     yield next
-//   } else {
-//     this.redirect('/login')
-//   }
-// })
+app.use(function*(next) {
+  if (this.isAuthenticated()) {
+    yield next
+  } else {
+    this.redirect('/login')
+  }
+})
 
 var secured = new Router();
 
@@ -96,21 +111,19 @@ secured.get('/admin', function*(a) {
 })
 
 secured.get('/upload', function*(a) {
-  this.body = yield render('upload');
+  this.body = yield render('upload', { user: this.req.user });
 })
 
 secured.post('/upload', function*(a) {
+  // the rest of the updates will be done via websocket channel
+  this.body = yield render('upload', { user: this.req.user });
+
   // multipart upload
   var parts = parse(this);
   var part;
   var filename;
-  var numberOfFilesToProcess = parts.length;
-  var numberOfProcessedFiles = 0;
-  var numberOfUploadedFiles = 0;
 
   while (part = yield parts) {
-    numberOfProcessedFiles++;
-
     var stream = fs.createWriteStream(os.tmpdir() + part.filename);
     part.pipe(stream);
     filename = part.filename;
@@ -118,19 +131,12 @@ secured.post('/upload', function*(a) {
     console.log('Receiving %s -> %s', part.filename, stream.path);
 
     var file = fs.createReadStream(stream.path);
+    var userId = this.req.user.identifier;
 
-    ftp.upload(file, part.filename, function(){
-      numberOfUploadedFiles++;
-
-      // todo socket message: success
-
-      if (numberOfProcessedFiles === numberOfFilesToProcess) {
-        // todo socket message: all done
-      }
-    } );
+    ftp.upload(file, part.filename, function(filename) {
+      websocketConnections[userId].emit('progress', 'Uploaded ' + filename);
+    });
   }
-
-  this.body = yield render('upload');
 })
 
 function *index() {

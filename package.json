@@ -22,6 +22,7 @@
     "co-busboy": "~1.2.0",
     "pkgcloud": "~0.9.6",
     "underscore": "~1.7.0",
-    "ftp": "~0.3.7"
+    "ftp": "~0.3.7",
+    "socket.io": "~1.1.0"
   }
 }
