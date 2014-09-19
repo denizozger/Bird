@@ -332,6 +332,9 @@ video {
   nav li:last-child a {
     margin-right: 0; }
 
+  #google-login {
+    content: url("../../../img/google-login-large.png"); }
+
   /* ========================
       INTERMEDIATE: IE Fixes
      ======================== */
