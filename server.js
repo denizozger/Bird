@@ -41,8 +41,8 @@ var pub = new Router();
 
  // error handler
  app.on('error', function(err){
-   console.log('Error %s', err.message);
-   console.log(err);
+   logger.error('Server error ' + err.message);
+   logger.error(err);
  });
 
 // x-response-time
@@ -68,15 +68,11 @@ app.use(function *(next){
   yield next;
   var ms = new Date - start;
 
-  if (this.response.status !== '200') {
-    console.log('%s %s %s - %s ms', this.method, this.response.status, this.url, ms);
+  if (this.response.status !== 200) {
+    logger.warn(this.method + ' ' + this.response.status + ' ' + this.url + ' - ' + ms + ' ms');
   } else {
-    console.log('%s %s %s - %s ms', this.method, this.response.status, this.url, ms);
+    logger.trace(this.method + ' ' + this.response.status + ' ' + this.url + ' - ' + ms + ' ms');
   }
-});
-
-app.on('error', function(err){
-  console.error('server error', err);
 });
 
 var websocketConnections = {}; // user identifier -> connection
@@ -86,7 +82,7 @@ var websocketConnections = {}; // user identifier -> connection
  */
  io.on('connection', function(connection){
   connection.on('upload_page', function (identifier) {
-    console.log('New websocket connection ' + identifier);
+    logger.debug('New websocket connection ' + identifier);
     websocketConnections[identifier] = connection;
   });
 });
@@ -158,14 +154,14 @@ secured.post('/upload', function*(a) {
     part.pipe(stream);
     filename = part.filename;
 
-    console.log('Receiving %s -> %s', part.filename, stream.path);
+    logger.info('Receiving %s -> %s', part.filename, stream.path);
 
     var file = fs.createReadStream(stream.path);
     var userId = this.req.user.identifier;
 
     // with a coftp, this would be "yield ftp.upload" just like here
     // https://github.com/koajs/examples/blob/master/multipart/app.js
-    ftp.upload(file, part.filename, function(filename) {
+    ftp.upload(file, part.filename, function(err, filename) {
       websocketConnections[userId].emit('progress', 'Uploaded ' + filename);
     });
   }
