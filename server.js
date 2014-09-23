@@ -41,7 +41,7 @@ var pub = new Router();
 
  // error handler
  app.on('error', function(err){
-   logger.error('Server error ' + err.message);
+   logger.error('Server error: ' + err.message);
    logger.error(err);
  });
 
@@ -82,7 +82,7 @@ var websocketConnections = {}; // user identifier -> connection
  */
  io.on('connection', function(connection){
   connection.on('upload_page', function (identifier) {
-    logger.debug('New websocket connection ' + identifier);
+    logger.debug('New websocket connection: ' + identifier + ' on upload_page');
     websocketConnections[identifier] = connection;
   });
 });
@@ -154,10 +154,10 @@ secured.post('/upload', function*(a) {
     part.pipe(stream);
     filename = part.filename;
 
-    logger.info('Receiving %s -> %s', part.filename, stream.path);
+    logger.info('Receiving ' + part.filename + ' -> ' + stream.path);
 
     var file = fs.createReadStream(stream.path);
-    var userId = this.req.user.identifier;
+    var userId = this.req.user.email;
 
     // with a coftp, this would be "yield ftp.upload" just like here
     // https://github.com/koajs/examples/blob/master/multipart/app.js

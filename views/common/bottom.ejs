@@ -1,9 +1,4 @@
-                </div> <!-- #main -->
-            </div> <!-- #main-container -->
 
-        </div> <!-- body-container -->
-
-        <div class="footer"></div>
 
 
         <!-- // <script data-main="js/main" src="../bower_components/requirejs/require.js"></script> -->
@@ -12,30 +7,6 @@
         <script language="JavaScript" type="text/javascript" src="../bower_components/underscore/underscore.js"></script>
         <script language="JavaScript" type="text/javascript" src="../bower_components/backbone/backbone.js"></script>
         <script language="JavaScript" type="text/javascript" src="../bower_components/handlebars/handlebars.js"></script>
-
-        <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
-        <script>
-            var userIdentifier;
-            <%
-              if (locals.user) {
-            %>
-                userIdentifier = '<%=user.identifier%>';
-            <%
-              }
-            %>
-
-            var socket = io('http://localhost:4000');
-            socket.emit('upload_page', userIdentifier);
-
-            var self = this;
-
-            socket.on('progress', function (data) {
-                console.log(data);
-
-                self.$("#uploaded-files").append('<li>' + data + '</li>');
-            });
-
-        </script>
 
         <script src="js/main.js"></script>
     </body>

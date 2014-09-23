@@ -1,25 +1,68 @@
 <% include common/top %>
 
-    <h1>File Upload</h1>
+    <div class="body-container">
 
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" multiple>
-        <button type="submit" class="primary">Upload</button>
-    </form>
+    <% include common/topnav %>
 
-    <ul id="uploaded-files"></ul>
+        <div class="main-container">
+            <div class="main wrapper clearfix">
 
-    <%
-      if (locals.outcome) {
-    %>
-      <p>Result: <%=outcome%></p>
-    <%
-      }
-    %>
+                <h1>File Upload</h1>
 
-    <aside>
-        <h3>Tip</h3>
-        <p>Try uploading multiple files at a time.</p>
-    </aside>
+                <form action="/upload" method="post" enctype="multipart/form-data">
+                    <input type="file" name="file" multiple>
+                    <button type="submit" class="primary">Upload</button>
+                </form>
+
+                <ul id="uploaded-files"></ul>
+
+                <%
+                  if (locals.outcome) {
+                %>
+                  <p>Result: <%=outcome%></p>
+                <%
+                  }
+                %>
+
+                <aside>
+                    <h3>Tip</h3>
+                    <p>Try uploading multiple files at a time.</p>
+                </aside>
+
+            </div> <!-- #main -->
+        </div> <!-- #main-container -->
+
+    </div> <!-- body-container -->
+
+    <div class="footer"></div>
+
+    <script src="https://cdn.socket.io/socket.io-1.1.0.js"></script>
+
+    <script>
+        var userIdentifier;
+        <%
+          if (locals.user) {
+        %>
+            userIdentifier = '<%=user.email%>';
+        <%
+          }
+        %>
+
+        var socket = io('http://localhost:4000');
+        var socketName = 'upload_page';
+
+        console.log(userIdentifier + ' identifies himself to ' + socketName);
+
+        socket.emit(socketName, userIdentifier);
+
+        var self = this;
+
+        socket.on('progress', function (data) {
+            console.log(data);
+
+            self.$("#uploaded-files").append('<li>' + data + '</li>');
+        });
+
+    </script>
 
 <% include common/bottom %>
