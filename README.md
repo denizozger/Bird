@@ -17,8 +17,6 @@ The future
 - [Grunt] for minification
 - Deploy to Heroku button
 - Try out https://github.com/gmetais/grunt-devperf
-- Make functions under /lib return promises OR make them generator functions
-- Try out Q.denodify() for functions that don't have co- alternatives, just like ftp module
 
 ## Running locally
 ```
