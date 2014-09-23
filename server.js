@@ -1,22 +1,28 @@
 'use strict';
 
-const koa = require('koa'),
-      Router = require('koa-router'),
-      views = require('co-views'),
-      serve = require('koa-static'),
-      app = koa(),
-      session = require('koa-generic-session'),
-      passport = require('koa-passport'),
-      parse = require('co-busboy'),
-      fs = require('fs'),
-      config = require('./config/config.js')(),
-      cdn = require('./lib/cdn.js')(config),
-      ftp = require('./lib/ftp.js')(config),
-      os = require('os'),
-      websocketServer = require('http').Server(app.callback()),
-      io = require('socket.io')(websocketServer),
-      co = require('co'),
-      logger = require('./lib/log');
+const
+  koa = require('koa'),
+  app = koa(),
+  Router = require('koa-router'),
+  views = require('co-views'),
+  serve = require('koa-static'),
+  session = require('koa-generic-session'),
+  passport = require('koa-passport'),
+  parse = require('co-busboy'),
+  fs = require('fs'),
+  os = require('os'),
+  websocketServer = require('http').Server(app.callback()),
+  io = require('socket.io')(websocketServer);
+
+const
+  config = require('./config/config.js')(),
+  cdn = require('./lib/cdn.js')(config),
+  _ftp = require('./lib/ftp.js')(config),
+  logger = require('./lib/log');
+
+const
+  Promise = require('bluebird'),
+  ftp = Promise.promisifyAll(_ftp);
 
 var render = views(__dirname + '/views', { ext: 'ejs' });
 var pub = new Router();
@@ -132,7 +138,6 @@ secured.get('/', function*(a) {
 })
 
 secured.get('/admin', function*(a) {
-  // console.log(JSON.stringify(this.req.user, null, 4));
   this.body = yield render('admin', { user: this.req.user });
 })
 
@@ -140,31 +145,26 @@ secured.get('/upload', function*(a) {
   this.body = yield render('upload', { user: this.req.user });
 })
 
-// To this date, there is no co-ftp kind of library, so we have callbacks
 secured.post('/upload', function*(a) {
-  // the rest of the updates will be done via websocket channel
-  this.body = yield render('upload', { user: this.req.user });
-
   var parts = parse(this);
   var part;
   var filename;
 
   while (part = yield parts) {
-    var stream = fs.createWriteStream(os.tmpdir() + part.filename);
-    part.pipe(stream);
+    // var stream = fs.createWriteStream(os.tmpdir() + part.filename);
+    // logger.debug('Saved file ' + part.filename + ' -> ' + stream.path);
     filename = part.filename;
 
-    logger.info('Receiving ' + part.filename + ' -> ' + stream.path);
+    yield ftp.uploadAsync(part, part.filename);
 
-    var file = fs.createReadStream(stream.path);
     var userId = this.req.user.email;
-
-    // with a coftp, this would be "yield ftp.upload" just like here
-    // https://github.com/koajs/examples/blob/master/multipart/app.js
-    ftp.upload(file, part.filename, function(err, filename) {
-      websocketConnections[userId].emit('progress', 'Uploaded ' + filename);
-    });
+    websocketConnections[userId].emit('progress', 'Uploaded ' + filename);
   }
+
+  this.body = yield render('upload', {
+      user: this.req.user,
+      outcome: 'All files uploaded' }
+  );
 })
 
 function *index() {
