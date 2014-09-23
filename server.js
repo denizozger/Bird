@@ -24,6 +24,8 @@ const
   Promise = require('bluebird'),
   ftp = Promise.promisifyAll(_ftp);
 
+Promise.longStackTraces();
+
 var render = views(__dirname + '/views', { ext: 'ejs' });
 var pub = new Router();
 
@@ -174,34 +176,4 @@ function *index() {
 app.use(secured.middleware())
 
 app.listen(3000);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
