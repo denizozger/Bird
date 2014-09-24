@@ -41,6 +41,7 @@ var pub = new Router();
      this.status = err.status || 500;
      this.type = 'html';
      this.body = '<p>Something went wrong.</p>';
+     this.body += JSON.stringify(err);
 
      // delegate error to the regular app
      this.app.emit('error', err, this);
@@ -148,6 +149,8 @@ secured.get('/upload', function*(a) {
 })
 
 secured.post('/upload', function*(a) {
+  if (!this.request.is('multipart/*')) return yield next;
+
   var parts = parse(this);
   var part;
   var filename;

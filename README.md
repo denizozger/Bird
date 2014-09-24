@@ -16,6 +16,7 @@ The future
 - [Require.js] for front-end dependencies
 - [Grunt] for minification
 - Deploy to Heroku button
+- Form validation
 - Try out https://github.com/gmetais/grunt-devperf
 
 ## Running locally
@@ -24,7 +25,10 @@ npm install
 bower install
 node --harmony server
 ```
-
+If you want to change CSS for development, run below command as well on a seperate terminal
+```
+sass --watch sass:css
+```
 [Koa]:http://koajs.com/
 [EJS]:http://embeddedjs.com/
 [Passport]:http://passportjs.org/
