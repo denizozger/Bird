@@ -17,6 +17,7 @@ The future
 - [Grunt] for minification
 - Deploy to Heroku button
 - Form validation
+- MVC pattern
 - Try out https://github.com/gmetais/grunt-devperf
 
 ## Running locally
