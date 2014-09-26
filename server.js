@@ -102,7 +102,6 @@ var websocketConnections = {}; // user identifier -> connection
  * Public routes
  */
 app.use(serve(__dirname));
-app.use(serve(__dirname + '/bower_components'));
 
 pub.get('/', index);
 pub.get('/login', login);
