@@ -11,6 +11,9 @@ Currently, it uses
 - [Backbone] except routing
 - [Sass] for tidy CSS
 
+Issues
+- Bower components are secured on Heroku, public on local (gah)
+
 The future
 - [Handlebars] for templating (it is actually there & works but isn't in use yet)
 - [Require.js] for front-end dependencies
