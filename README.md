@@ -12,7 +12,8 @@ Currently, it uses
 - [Sass] for tidy CSS
 
 Issues
-- Bower components are secured on Heroku, public on local (gah)
+- On Heroku Bower components are secured, on local they are public (gah)
+- On Heroku, Google auth error: "OpenID auth request contains an unregistered domain"
 
 The future
 - [Handlebars] for templating (it is actually there & works but isn't in use yet)
