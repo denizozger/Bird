@@ -103,11 +103,12 @@ var websocketConnections = {}; // user identifier -> connection
  */
 app.use(serve(__dirname));
 
+pub.get('/', index);
 pub.get('/login', login);
 pub.get('/auth/google', passport.authenticate('google'));
 pub.get('/auth/google/callback',
   passport.authenticate('google', {
-    successRedirect: '/admin',
+    successRedirect: '/',
     failureRedirect: '/loginFailed'
   })
 )
@@ -120,6 +121,10 @@ app.use(pub.middleware());
 
 function *login() {
   this.body = yield render('login');
+}
+
+function *index() {
+  this.body = yield render('index', { user: this.req.user });
 }
 
 /**
@@ -135,14 +140,6 @@ app.use(function*(next) {
 })
 
 var secured = new Router();
-
-secured.get('/', function*(a) {
-  this.body = yield render('login');
-})
-
-secured.get('/admin', function*(a) {
-  this.body = yield render('admin', { user: this.req.user });
-})
 
 secured.get('/upload', function*(a) {
   this.body = yield render('upload', { user: this.req.user });
@@ -172,11 +169,7 @@ secured.post('/upload', function*(a) {
   );
 })
 
-function *index() {
-  this.body = yield render('index');
-}
-
 app.use(secured.middleware())
 
-app.listen(process.env.PORT || 5000);
+app.listen(process.env.PORT || config.server.port);
 

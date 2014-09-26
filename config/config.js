@@ -20,5 +20,9 @@ module.exports = function() {
     allowedDomain: 'gmail.com'
   }
 
+  this.server = {
+    port: 5000
+  }
+
   return this;
 }
