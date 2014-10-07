@@ -1,7 +1,7 @@
 Bird
 ===
 
-This is some sort of playground that I try frameworks/technologies
+Delete-key friendly, modern Hackathon starter
 
 Currently, it uses
 - [Koa] as web server
@@ -10,6 +10,7 @@ Currently, it uses
 - [Bower] for front-end packages
 - [Backbone] except routing
 - [Sass] for tidy CSS
+- [HTML5 Boilerplate] as front-end template
 
 Issues
 - On Heroku Bower components are secured, on local they are public (gah)
@@ -40,6 +41,7 @@ sass --watch sass:css
 [Bower]:http://bower.io/
 [Backbone]:http://backbonejs.org/
 [Handlebars]:http://handlebarsjs.com/
+[HTML5 Boilerplate]:http://html5boilerplate.com/
 [Require.js]:http://requirejs.org/
 [Grunt]:http://gruntjs.com/
 [Sass]:http://sass-lang.com/
