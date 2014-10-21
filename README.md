@@ -17,13 +17,14 @@ Issues
 - On Heroku, Google auth error: "OpenID auth request contains an unregistered domain"
 
 The future
+= [Moongoose] as DB
 - [Handlebars] for templating (it is actually there & works but isn't in use yet)
 - [Require.js] for front-end dependencies
 - [Grunt] for minification
 - Deploy to Heroku button
 - Form validation
 - MVC pattern
-- Try out https://github.com/gmetais/grunt-devperf
+- Testing with [Mocha]
 
 ## Running locally
 ```
@@ -39,6 +40,8 @@ sass --watch sass:css
 [EJS]:http://embeddedjs.com/
 [Passport]:http://passportjs.org/
 [Bower]:http://bower.io/
+[Moongoose]:https://github.com/learnboost/mongoose
+[Mocha]:https://github.com/mochajs/mocha
 [Backbone]:http://backbonejs.org/
 [Handlebars]:http://handlebarsjs.com/
 [HTML5 Boilerplate]:http://html5boilerplate.com/
