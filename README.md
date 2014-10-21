@@ -17,7 +17,7 @@ Issues
 - On Heroku, Google auth error: "OpenID auth request contains an unregistered domain"
 
 The future
-= [Moongoose] as DB
+- [Moongoose] as DB
 - [Handlebars] for templating (it is actually there & works but isn't in use yet)
 - [Require.js] for front-end dependencies
 - [Grunt] for minification
